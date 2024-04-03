@@ -66,6 +66,7 @@ dependencies {
     implementation(libs.ui.graphics)
     implementation(libs.ui.tooling.preview)
     implementation(libs.material3)
+    implementation(libs.firebase.messaging)
     testImplementation(libs.junit)
     // Import the Firebase BoM
     implementation(platform("com.google.firebase:firebase-bom:32.8.0"))
@@ -73,8 +74,9 @@ dependencies {
     // When using the BoM, you don't specify versions in Firebase library dependencies
 
     // Add the dependency for the Firebase SDK for Google Analytics
-    implementation("com.google.firebase:firebase-analytics")
     implementation("com.firebaseui:firebase-ui-auth:8.0.2")
+    implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-messaging:23.4.1")
 
     implementation("androidx.viewpager2:viewpager2:1.0.0")
     implementation("com.jakewharton:butterknife:10.2.3")
