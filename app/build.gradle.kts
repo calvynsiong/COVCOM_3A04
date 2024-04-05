@@ -14,7 +14,7 @@ android {
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
-
+        multiDexEnabled = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
@@ -67,6 +67,8 @@ dependencies {
     implementation(libs.ui.tooling.preview)
     implementation(libs.material3)
     implementation(libs.firebase.messaging)
+    implementation(libs.navigation.fragment.ktx)
+    implementation(libs.navigation.ui.ktx)
     testImplementation(libs.junit)
     // Import the Firebase BoM
     implementation(platform("com.google.firebase:firebase-bom:32.8.0"))
@@ -85,6 +87,8 @@ dependencies {
 //Scalable screen size
     implementation("com.intuit.sdp:sdp-android:1.0.6")
     implementation("com.intuit.ssp:ssp-android:1.0.6")
+    implementation("com.google.firebase:firebase-firestore")
+    implementation("androidx.multidex:multidex:2.0.1")
 
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

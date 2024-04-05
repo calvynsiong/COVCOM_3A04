@@ -24,6 +24,10 @@
         android:theme="@style/Theme.COVCOM"
         tools:targetApi="31">
         <activity
+            android:name=".Views.ChatActivity"
+            android:exported="false"
+            android:theme="@style/Theme.COVCOM" />
+        <activity
             android:name=".Views.SignInActivity"
             android:exported="true"
             android:windowSoftInputMode="adjustResize">
@@ -33,11 +37,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <service
             android:name=".Firebase.MessagingService"
             android:exported="true">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
     </application>
