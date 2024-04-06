@@ -1,6 +1,8 @@
 package com.example.covcom.Views;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -18,6 +20,8 @@ public class SignInActivity extends AppCompatActivity {
 
     private ActivitySignInBinding binding;
 
+    private SharedPreferences preferences;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,7 +31,7 @@ public class SignInActivity extends AppCompatActivity {
 
         setListeners();
 
-
+        preferences =  getApplicationContext().getSharedPreferences(Constants.SHARED_PREFERENCE_KEY, Context.MODE_PRIVATE);
 
 
     };
@@ -61,7 +65,9 @@ public class SignInActivity extends AppCompatActivity {
             if (task.isSuccessful() && task.getResult()!=null && !task.getResult().getDocuments().isEmpty()){
                 Log.d("FCM","Added user");
                 showToast("Logged in");
-                startActivity(new Intent(getApplicationContext(), ChatActivity.class));
+                preferences.edit().putString(Constants.DATABASE_USERNAME, email).apply();
+                preferences.edit().putString(Constants.DATABASE_PASSWORD, password).apply();
+                startActivity(new Intent(getApplicationContext(), UsersActivity.class));
             } else {
                 showToast("Invalid Credentials");
             }

@@ -24,6 +24,9 @@
         android:theme="@style/Theme.COVCOM"
         tools:targetApi="31">
         <activity
+            android:name=".Views.UsersActivity"
+            android:exported="false" />
+        <activity
             android:name=".Views.ChatActivity"
             android:exported="false"
             android:theme="@style/Theme.COVCOM" />

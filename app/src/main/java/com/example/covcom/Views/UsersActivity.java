@@ -1,0 +1,118 @@
+package com.example.covcom.Views;
+
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.util.Log;
+import android.view.View;
+import android.widget.Toast;
+
+import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
+import com.example.covcom.Adapters.UsersAdapter;
+import com.example.covcom.Constants;
+import com.example.covcom.Models.User;
+import com.example.covcom.R;
+import com.example.covcom.databinding.ActivityUsersBinding;
+import com.google.firebase.Firebase;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class UsersActivity extends AppCompatActivity {
+
+    private ActivityUsersBinding binding;
+    private SharedPreferences sharedPreferences;
+    ;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        binding = ActivityUsersBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+        setListeners();
+        getUsers();
+        sharedPreferences = getApplicationContext().getSharedPreferences(Constants.SHARED_PREFERENCE_KEY, Context.MODE_PRIVATE);
+
+    }
+
+    private void showToast(String text) {
+        Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT).show();
+    }
+
+    private void returnToSignIn(){
+        startActivity(new Intent(getApplicationContext(), SignInActivity.class));
+    }
+
+    private void setListeners(){
+
+        binding.backButton.setOnClickListener(t->{
+          returnToSignIn();
+        });
+    }
+
+    private void getUsers() {
+        loading(true);
+        FirebaseFirestore database = FirebaseFirestore.getInstance();
+        database.collection(Constants.DATABASE_USERS).get()
+                .addOnCompleteListener(task -> {
+                    showToast("User");
+                    loading(false);
+                    String currentUserId = sharedPreferences.getString(Constants.DATABASE_USERNAME, "Default user");
+
+                    if (!task.isSuccessful() || task.getResult() == null) {
+                        showNoUsers();
+                    }
+                    List<User> users = new ArrayList<>();
+                    for (QueryDocumentSnapshot entry : task.getResult()) {
+                        String username = entry.getString(Constants.DATABASE_USERNAME);
+                        if (currentUserId.equals(username)) continue;
+
+                        User user = new User();
+                        user.name = username;
+
+                        users.add(user);
+                        Log.d("FCM-f",username);
+
+                    }
+                    if (users.size() > 0) {
+                        UsersAdapter usersAdapter = new UsersAdapter(users);
+                        binding.usersRecyclerView.setAdapter(usersAdapter);
+                        binding.usersRecyclerView.setVisibility(View.VISIBLE);
+
+                    } else {
+                        showNoUsers();
+                    }
+
+                });
+    }
+
+    private void showNoUsers() {
+        binding.textErrorMessage.setText(String.format("No users available"));
+        binding.textErrorMessage.setVisibility(View.VISIBLE);
+    }
+
+    private void loading(Boolean isLoading) {
+
+        if (isLoading){
+            binding.progressBar.setVisibility(View.VISIBLE);
+        }
+        else {
+            binding.progressBar.setVisibility(View.INVISIBLE);
+        }
+    }
+}

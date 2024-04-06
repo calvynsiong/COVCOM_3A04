@@ -25,7 +25,7 @@
             android:layout_marginTop="@dimen/_100sdp"
             android:text="Login To COVCOM"
             android:textColor="@color/primary"
-            android:textSize="@dimen/_24ssp"></TextView>
+            android:textSize="@dimen/_24ssp"/>
 
 
         <EditText
