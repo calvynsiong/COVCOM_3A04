@@ -1,4 +1,4 @@
-package com.example.covcom.Views.ui.theme
+package com.example.covcom.Controller.ui.theme
 
 import android.app.Activity
 import android.os.Build

@@ -24,14 +24,14 @@
         android:theme="@style/Theme.COVCOM"
         tools:targetApi="31">
         <activity
-            android:name=".Views.UsersActivity"
+            android:name=".Controller.UserController"
             android:exported="false" />
         <activity
-            android:name=".Views.ChatActivity"
+            android:name=".Controller.ChatController"
             android:exported="false"
             android:theme="@style/Theme.COVCOM" />
         <activity
-            android:name=".Views.SignInActivity"
+            android:name=".Controller.SignInController"
             android:exported="true"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>

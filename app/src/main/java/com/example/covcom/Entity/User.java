@@ -1,4 +1,4 @@
-package com.example.covcom.Models;
+package com.example.covcom.Entity;
 
 import java.io.Serializable;
 

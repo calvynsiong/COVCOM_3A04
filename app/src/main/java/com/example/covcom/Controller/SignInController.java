@@ -1,4 +1,4 @@
-package com.example.covcom.Views;
+package com.example.covcom.Controller;
 
 import android.content.Context;
 import android.content.Intent;
@@ -16,7 +16,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
 
-public class SignInActivity extends AppCompatActivity {
+public class SignInController extends AppCompatActivity {
 
     private ActivitySignInBinding binding;
 
@@ -67,7 +67,7 @@ public class SignInActivity extends AppCompatActivity {
                 showToast("Logged in");
                 preferences.edit().putString(Constants.DATABASE_USERNAME, email).apply();
                 preferences.edit().putString(Constants.DATABASE_PASSWORD, password).apply();
-                startActivity(new Intent(getApplicationContext(), UsersActivity.class));
+                startActivity(new Intent(getApplicationContext(), UserController.class));
             } else {
                 showToast("Invalid Credentials");
             }

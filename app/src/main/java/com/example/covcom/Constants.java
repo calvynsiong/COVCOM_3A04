@@ -6,5 +6,7 @@ public class Constants {
     public static final String DATABASE_PASSWORD = "password";
     public static final String SHARED_PREFERENCE_KEY = "preferences";
 
+    public static final String KEY_USER = "user";
+
 
 }

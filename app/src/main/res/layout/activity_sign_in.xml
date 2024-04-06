@@ -10,7 +10,7 @@
     android:padding="@dimen/_24sdp"
     android:scrollbars="none"
 
-    tools:context=".Views.SignInActivity">
+    tools:context=".Controller.SignInController">
 
 
     <LinearLayout

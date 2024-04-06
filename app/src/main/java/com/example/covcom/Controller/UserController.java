@@ -1,10 +1,9 @@
-package com.example.covcom.Views;
+package com.example.covcom.Controller;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -17,17 +16,17 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.covcom.Adapters.UsersAdapter;
 import com.example.covcom.Constants;
-import com.example.covcom.Models.User;
+import com.example.covcom.Listeners.UserListener;
+import com.example.covcom.Entity.User;
 import com.example.covcom.R;
 import com.example.covcom.databinding.ActivityUsersBinding;
-import com.google.firebase.Firebase;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class UsersActivity extends AppCompatActivity {
+public class UserController extends AppCompatActivity implements UserListener {
 
     private ActivityUsersBinding binding;
     private SharedPreferences sharedPreferences;
@@ -55,7 +54,7 @@ public class UsersActivity extends AppCompatActivity {
     }
 
     private void returnToSignIn(){
-        startActivity(new Intent(getApplicationContext(), SignInActivity.class));
+        startActivity(new Intent(getApplicationContext(), SignInController.class));
     }
 
     private void setListeners(){
@@ -70,7 +69,6 @@ public class UsersActivity extends AppCompatActivity {
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         database.collection(Constants.DATABASE_USERS).get()
                 .addOnCompleteListener(task -> {
-                    showToast("User");
                     loading(false);
                     String currentUserId = sharedPreferences.getString(Constants.DATABASE_USERNAME, "Default user");
 
@@ -90,7 +88,7 @@ public class UsersActivity extends AppCompatActivity {
 
                     }
                     if (users.size() > 0) {
-                        UsersAdapter usersAdapter = new UsersAdapter(users);
+                        UsersAdapter usersAdapter = new UsersAdapter(users,this);
                         binding.usersRecyclerView.setAdapter(usersAdapter);
                         binding.usersRecyclerView.setVisibility(View.VISIBLE);
 
@@ -114,5 +112,13 @@ public class UsersActivity extends AppCompatActivity {
         else {
             binding.progressBar.setVisibility(View.INVISIBLE);
         }
+    }
+
+    @Override
+    public void onUserClicked(User user) {
+        Intent intent = new Intent(getApplicationContext(), ChatController.class);
+        intent.putExtra(Constants.KEY_USER,user);
+        startActivity(intent);
+        finish();
     }
 }

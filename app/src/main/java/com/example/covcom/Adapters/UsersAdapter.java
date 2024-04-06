@@ -1,6 +1,5 @@
 package com.example.covcom.Adapters;
 
-import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,7 +7,8 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.covcom.Models.User;
+import com.example.covcom.Listeners.UserListener;
+import com.example.covcom.Entity.User;
 import com.example.covcom.databinding.ItemContainerUserBinding;
 
 import java.util.List;
@@ -16,9 +16,11 @@ import java.util.List;
 public class UsersAdapter extends  RecyclerView.Adapter<UsersAdapter.UserViewHolder>{
 
     private final List<User> users;
+    private final UserListener userListener;
 
-    public UsersAdapter (List<User> users){
+    public UsersAdapter (List<User> users, UserListener userListener){
         this.users = users;
+        this.userListener = userListener;
 
     }
 
@@ -44,7 +46,7 @@ public class UsersAdapter extends  RecyclerView.Adapter<UsersAdapter.UserViewHol
         return users.size();
     }
 
-    static class UserViewHolder extends RecyclerView.ViewHolder {
+    class UserViewHolder extends RecyclerView.ViewHolder {
         ItemContainerUserBinding binding;
         UserViewHolder(ItemContainerUserBinding itemContainerUserBinding){
             super(itemContainerUserBinding.getRoot());
@@ -53,6 +55,7 @@ public class UsersAdapter extends  RecyclerView.Adapter<UsersAdapter.UserViewHol
 
         void setUserData(User user){
             binding.textName.setText(user.name);
+            binding.getRoot().setOnClickListener(v->userListener.onUserClicked(user));
 
         }
     }
