@@ -50,6 +50,7 @@ android {
     }
 }
 
+
 dependencies {
 
     implementation(libs.appcompat)
@@ -89,6 +90,9 @@ dependencies {
     implementation("com.intuit.ssp:ssp-android:1.0.6")
     implementation("com.google.firebase:firebase-firestore")
     implementation("androidx.multidex:multidex:2.0.1")
+
+    implementation("com.makeramen:roundedimageview:2.3.0")
+
 
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

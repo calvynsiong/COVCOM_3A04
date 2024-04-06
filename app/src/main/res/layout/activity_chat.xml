@@ -8,26 +8,65 @@
     android:animateLayoutChanges="true"
     android:background="@color/primary"
     tools:context=".Views.ChatActivity">
-<View
-    android:id="@+id/viewBackground"
-    android:layout_width="match_parent"
-    android:layout_height="0dp"
-    android:layout_marginBottom="@dimen/_16sdp"
-    android:background="@drawable/background_top"
-    app:layout_constraintBottom_toTopOf="@+id/layout"
-    app:layout_constraintTop_toTopOf="parent"
-    />
+
+    <View
+        android:id="@+id/viewBackground"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="@dimen/_16sdp"
+        android:background="@drawable/background_top"
+        app:layout_constraintBottom_toTopOf="@+id/layout"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ImageView
+        android:id="@+id/backButton"
         android:layout_width="@dimen/_30sdp"
         android:layout_height="@dimen/_30sdp"
-        android:id="@+id/backButton"
-        android:src="@drawable/baseline_arrow_back_ios_24"
         android:layout_margin="@dimen/_8sdp"
         android:padding="@dimen/_6sdp"
+        android:src="@drawable/baseline_arrow_back_ios_24"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
+        app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:id="@+id/textName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="1"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toBottomOf="@+id/backButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/backButton" />
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:clipToPadding="false"
+        android:orientation="vertical"
+        android:overScrollMode="never"
+        android:padding="@dimen/_20sdp"
+        android:visibility="gone"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toBottomOf="@+id/viewBackground"
+        app:layout_constraintTop_toBottomOf="@+id/backButton"
+        app:layout_constraintVertical_bias="0.0"
+        tools:layout_editor_absoluteX="0dp" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="@dimen/_25sdp"
+        android:layout_height="@dimen/_25sdp"
+        app:layout_constraintBottom_toBottomOf="@+id/viewBackground"
+        app:layout_constraintEnd_toEndOf="@+id/viewBackground"
+        app:layout_constraintTop_toTopOf="@+id/viewBackground"
+        app:layout_constraintStart_toStartOf="@+id/viewBackground"
+        />
 
     <FrameLayout
         android:id="@+id/layout"
@@ -49,25 +88,25 @@
             android:src="@drawable/baseline_arrow_forward_ios_24"
             app:tint="@color/black" />
     </FrameLayout>
-<EditText
-    android:layout_width="0dp"
-    android:layout_height="@dimen/_40sdp"
-    android:id="@+id/inputMessage"
-    android:layout_marginStart="@dimen/_16sdp"
-    android:layout_marginLeft="@dimen/_16sdp"
-    android:layout_marginEnd="@dimen/_8sdp"
-    android:layout_marginRight="@dimen/_8sdp"
-    android:layout_marginBottom="@dimen/_12sdp"
-    android:background="@drawable/background_chat_input"
-    android:hint="Type a message"
-    android:imeOptions="actionDone"
-    android:inputType="text"
-    android:padding="@dimen/_8sdp"
-    android:textColor="@color/white"
-    android:textColorHint="@color/material_dynamic_secondary10"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintEnd_toStartOf="@id/layout"
-    android:textSize="@dimen/_12sdp"
-    />
+
+    <EditText
+        android:id="@+id/inputMessage"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/_40sdp"
+        android:layout_marginStart="@dimen/_16sdp"
+        android:layout_marginLeft="@dimen/_16sdp"
+        android:layout_marginEnd="@dimen/_8sdp"
+        android:layout_marginRight="@dimen/_8sdp"
+        android:layout_marginBottom="@dimen/_12sdp"
+        android:background="@drawable/background_chat_input"
+        android:hint="Type a message"
+        android:imeOptions="actionDone"
+        android:inputType="text"
+        android:padding="@dimen/_8sdp"
+        android:textColor="@color/white"
+        android:textColorHint="@color/material_dynamic_secondary10"
+        android:textSize="@dimen/_12sdp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/layout"
+        app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
