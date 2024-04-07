@@ -67,6 +67,7 @@
         />
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/chatRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:clipToPadding="false"
@@ -109,6 +110,7 @@
             android:layout_marginStart="@dimen/_4sdp"
             android:layout_marginLeft="@dimen/_4sdp"
             android:padding="@dimen/_8sdp"
+            android:id="@+id/sendButton"
             android:src="@drawable/baseline_arrow_forward_ios_24"
             app:tint="@color/black" />
     </FrameLayout>

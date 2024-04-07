@@ -70,7 +70,7 @@ public class UserController extends AppCompatActivity implements UserListener {
         database.collection(Constants.DATABASE_USERS).get()
                 .addOnCompleteListener(task -> {
                     loading(false);
-                    String currentUserId = sharedPreferences.getString(Constants.DATABASE_USERNAME, "Default user");
+                    String currentUserId = sharedPreferences.getString(Constants.KEY_USER_ID, "Default user");
 
                     if (!task.isSuccessful() || task.getResult() == null) {
                         showNoUsers();
@@ -78,10 +78,12 @@ public class UserController extends AppCompatActivity implements UserListener {
                     List<User> users = new ArrayList<>();
                     for (QueryDocumentSnapshot entry : task.getResult()) {
                         String username = entry.getString(Constants.DATABASE_USERNAME);
-                        if (currentUserId.equals(username)) continue;
+                        String userId = entry.getId();
+                        if (currentUserId.equals(userId)) continue;
 
                         User user = new User();
                         user.name = username;
+                        user.id = userId;
 
                         users.add(user);
                         Log.d("FCM-f",username);
