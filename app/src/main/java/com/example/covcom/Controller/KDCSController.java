@@ -12,15 +12,18 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.example.covcom.Constants;
+import com.google.firebase.firestore.SetOptions;
 
 import javax.crypto.*;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.*;
 import java.util.Base64;
+import java.util.HashMap;
+
 public class KDCSController {
     private String user;
-    private static final String ALGO = "AES";
     private FirebaseFirestore database;
+    private static final String ALGO = "AES";
     private static final String TAG = "KDCS";
 
     // Initialize KDCS for currently authenticated user
@@ -40,22 +43,23 @@ public class KDCSController {
     }
 
     public SecretKey getSessionKey(String recipient) throws Exception {
-        String sessionKeyDBId = String.format("%s:%s", this.user, recipient);
-        String keyStr = getSessionKeyFromDB(sessionKeyDBId);
+        String keyStr = getSessionKeyFromDB(recipient);
         if (keyStr.isEmpty()) {
             byte[] decodedKey = Base64.getDecoder().decode(keyStr);
             return new SecretKeySpec(decodedKey, 0, decodedKey.length, ALGO);
         }
-        else {
-            throw new Exception("Key not retrieved");;
-        }
+//        else {
+//            throw new Exception("Key not retrieved");;
+//        }
+        return new SecretKeySpec(new byte[0], 0, 0, ALGO);
     }
 
     // Update Firestore session key for user
     private void addSessionKeyToDB(String sender, String recipient, String key) {
-        String sessionKeyDBId = String.format("%s:%s", sender, recipient);
-        this.database.collection(Constants.KDCS).document(sessionKeyDBId)
-                .set(key)
+        HashMap<String, String> recipientKeyPair = new HashMap<String, String>();
+        recipientKeyPair.put(recipient, key);
+        this.database.collection(Constants.KDCS).document(sender)
+                .set(recipientKeyPair, SetOptions.merge())
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
@@ -70,9 +74,9 @@ public class KDCSController {
                 });
     }
 
-    private String getSessionKeyFromDB(String sessionKeyDBId) {
+    private String getSessionKeyFromDB(String recipient) {
         String sessionKey = "";
-        this.database.collection(Constants.KDCS).document(sessionKeyDBId)
+        this.database.collection(Constants.KDCS).document(this.user)
                 .get()
                 .continueWith(new Continuation<DocumentSnapshot, String>() {
                     @Override
@@ -82,7 +86,7 @@ public class KDCSController {
                             DocumentSnapshot document = task.getResult();
                             Log.d(TAG, "Cached document data: " + document.getData());
                             if (document.exists()) {
-                                return document.getString("sessionKey");
+                                return document.getString(recipient);
                             } else {
                                 throw new Exception("Document not found");
                             }
