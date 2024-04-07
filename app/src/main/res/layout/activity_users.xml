@@ -11,28 +11,50 @@
 
 
     <ImageView
+        android:id="@+id/addContactButton"
+        android:layout_width="79dp"
+        android:layout_height="63dp"
+        android:layout_marginTop="6dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/baseline_add"
+        app:tint="@color/white" />
+
+    <ImageView
+        android:id="@+id/manageButton"
+        android:layout_width="63dp"
+        android:layout_height="53dp"
+        android:layout_marginTop="14dp"
+        android:layout_marginEnd="76dp"
+        android:background="#002B2D30"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/baseline_manage_accounts_24"
+        app:tint="@color/white" />
+
+    <ImageView
+        android:id="@+id/backButton"
         android:layout_width="@dimen/_30sdp"
         android:layout_height="@dimen/_30sdp"
-        android:id="@+id/backButton"
-        android:src="@drawable/baseline_arrow_back_ios_24"
         android:layout_marginLeft="@dimen/_16sdp"
         android:layout_marginTop="@dimen/_16sdp"
+        android:onClick="returnToSignIn"
         android:padding="@dimen/_6sdp"
+        android:src="@drawable/baseline_arrow_back_ios_24"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:onClick="returnToSignIn"
-        app:tint="@color/white"/>
+        app:tint="@color/white" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Conversations"
-        android:textStyle="bold"
-        android:textSize="@dimen/_14ssp"
-        app:layout_constraintTop_toTopOf="@id/backButton"
-        app:layout_constraintEnd_toEndOf="parent"
         android:textColor="@color/white"
-        app:layout_constraintStart_toStartOf="parent"/>
+        android:textSize="@dimen/_14ssp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/backButton" />
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -40,8 +62,7 @@
         android:layout_marginTop="@dimen/_10sdp"
         android:background="@drawable/background_bottom"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/backButton"
-        >
+        app:layout_constraintTop_toBottomOf="@id/backButton">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/usersRecyclerView"
@@ -52,23 +73,22 @@
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
         <ProgressBar
+            android:id="@+id/progressBar"
             android:layout_width="@dimen/_25sdp"
             android:layout_height="@dimen/_25sdp"
-            android:id="@+id/progressBar"
-            android:visibility="gone"
-            android:layout_gravity="center"/>
+            android:layout_gravity="center"
+            android:visibility="gone" />
+
         <TextView
+            android:id="@+id/textErrorMessage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/textErrorMessage"
             android:layout_gravity="center"
             android:textColor="@color/red"
             android:textSize="@dimen/_12ssp"
-            android:visibility="gone"
-            />
+            android:visibility="gone" />
 
     </FrameLayout>
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
