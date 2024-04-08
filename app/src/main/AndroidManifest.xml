@@ -27,6 +27,10 @@
             android:name=".Controller.UserController"
             android:exported="false" />
         <activity
+            android:name=".Controller.ManageAccountController"
+            android:exported="false"
+            android:theme="@style/Theme.COVCOM" />
+        <activity
             android:name=".Controller.ChatController"
             android:exported="false"
             android:theme="@style/Theme.COVCOM" />

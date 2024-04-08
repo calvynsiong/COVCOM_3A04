@@ -44,6 +44,7 @@ public class SignInController extends AppCompatActivity {
     private Boolean isValidLogin() {
         if (binding.inputEmail.getText().toString().trim().isEmpty() || binding.inputPassword.getText().toString().trim().isEmpty()) {
             showToast("Invalid Credentials. Please enter proper username/email and password");
+            startActivity(new Intent(getApplicationContext(), SignInController.class));
         }
 
         return true;

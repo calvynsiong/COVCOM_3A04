@@ -57,8 +57,12 @@ public class UserController extends AppCompatActivity implements UserListener {
         startActivity(new Intent(getApplicationContext(), SignInController.class));
     }
 
-    private void setListeners(){
+    private void returnToManageAccount(){
+        startActivity(new Intent(getApplicationContext(), ManageAccountController.class));
+    }
 
+    private void setListeners(){
+        binding.manageButton.setOnClickListener(v->returnToManageAccount());
         binding.backButton.setOnClickListener(t->{
           returnToSignIn();
         });
