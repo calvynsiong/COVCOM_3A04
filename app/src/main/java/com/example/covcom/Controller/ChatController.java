@@ -33,6 +33,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
+import javax.crypto.SecretKey;
+
 public class ChatController extends AppCompatActivity {
 
     private ActivityChatBinding binding;
@@ -41,6 +43,9 @@ public class ChatController extends AppCompatActivity {
     private ChatAdapter chatAdapter;
     private SharedPreferences preferences;
     private FirebaseFirestore database;
+    private KDCSController kdcs;
+    private SecretKey sessionKey;
+    private EncryptionController encryptContoller;
 
     private void init(){
         preferences = getApplicationContext().getSharedPreferences(Constants.SHARED_PREFERENCE_KEY, Context.MODE_PRIVATE);
@@ -51,7 +56,14 @@ public class ChatController extends AppCompatActivity {
                 );
         binding.chatRecyclerView.setAdapter(chatAdapter);
         database = FirebaseFirestore.getInstance();
-
+        kdcs = new KDCSController(preferences.getString(Constants.DATABASE_USERNAME, ""));
+        try {
+            sessionKey = this.getSessionKey();
+            Log.d("KDCS", "Session key:\t" + sessionKey);
+            encryptContoller = new EncryptionController(sessionKey);
+        } catch (Exception e) {
+            Log.d("KDCS", "Error in creating encryption agent:\t" + e);
+        }
 
     }
 
@@ -79,6 +91,16 @@ public class ChatController extends AppCompatActivity {
         binding.receiverTextName.setText(receiverName);
     }
 
+    private SecretKey getSessionKey() throws Exception {
+        try {
+            Log.d("KDCS", "Generate session key initiated");
+            kdcs.generateSessionKey(receiver.name);
+            return kdcs.getSessionKey(receiver.name);
+        } catch(Exception e) {
+            throw new Exception("Error generating session key");
+        }
+    }
+
     private void listenMessages(){
         database.collection(Constants.KEY_CHAT)
                 .whereEqualTo(Constants.KEY_SENDER_ID,preferences.getString(Constants.KEY_USER_ID,""))
@@ -91,6 +113,7 @@ public class ChatController extends AppCompatActivity {
     }
 
     private final EventListener<QuerySnapshot> eventListener = (value, error) ->{
+        String messageText;
         if (error!=null) return;
         if (value!=null){
             int count = messages.size();
@@ -100,7 +123,13 @@ public class ChatController extends AppCompatActivity {
                     QueryDocumentSnapshot document = change.getDocument();
                     messageEntity.senderId = document.getString(Constants.KEY_SENDER_ID);
                     messageEntity.receiverId= document.getString(Constants.KEY_RECEIVER_ID);
-                    messageEntity.message = document.getString(Constants.KEY_MESSAGE);
+                    try {
+                        messageText = encryptContoller.decrypt(document.getString(Constants.KEY_MESSAGE));
+                    } catch (Exception e) {
+                        Log.d("FCM-f", "Error eecrypting message" + e);
+                        messageText = "Error decrypting";
+                    }
+                    messageEntity.message = messageText;
                     messageEntity.dateTime = getTimestamp(document.getDate(Constants.KEY_TIMESTAMP));
                     messageEntity.dateObject = document.getDate(Constants.KEY_TIMESTAMP);
                     messages.add(messageEntity);
@@ -131,7 +160,13 @@ public class ChatController extends AppCompatActivity {
         Log.d("FCM-f",preferences.getString(Constants.KEY_USER_ID + "Is the sender", "Default user"));
         message.put(Constants.KEY_SENDER_ID,preferences.getString(Constants.KEY_USER_ID,""));
         message.put(Constants.KEY_RECEIVER_ID, receiver.id);
-        message.put(Constants.KEY_MESSAGE,binding.inputMessage.getText().toString());
+        try {
+            String encryptedText = encryptContoller.encrypt(binding.inputMessage.getText().toString());
+            message.put(Constants.KEY_MESSAGE,encryptedText);
+        } catch (Exception e) {
+            Log.d("FCM-f", "Error encrypting message" + e);
+            message.put(Constants.KEY_MESSAGE,"Error message");
+        }
         message.put(Constants.KEY_TIMESTAMP, new Date());
         database.collection(Constants.KEY_CHAT).add(message);
         binding.inputMessage.setText(null);

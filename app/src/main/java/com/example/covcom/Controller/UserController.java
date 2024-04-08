@@ -30,7 +30,7 @@ public class UserController extends AppCompatActivity implements UserListener {
 
     private ActivityUsersBinding binding;
     private SharedPreferences sharedPreferences;
-    private KDCSController kdcs;
+//    private KDCSController kdcs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +46,7 @@ public class UserController extends AppCompatActivity implements UserListener {
         setListeners();
         getUsers();
         sharedPreferences = getApplicationContext().getSharedPreferences(Constants.SHARED_PREFERENCE_KEY, Context.MODE_PRIVATE);
-        kdcs = new KDCSController(sharedPreferences.getString(Constants.DATABASE_USERNAME, ""));
+//        kdcs = new KDCSController(sharedPreferences.getString(Constants.DATABASE_USERNAME, ""));
     }
 
     private void showToast(String text) {
@@ -125,12 +125,12 @@ public class UserController extends AppCompatActivity implements UserListener {
         Intent intent = new Intent(getApplicationContext(), ChatController.class);
         intent.putExtra(Constants.KEY_USER,user);
         startActivity(intent);
-        try {
-            Log.d("FCM-f", "Generate session key initiated");
-            kdcs.generateSessionKey(user.name);
-        } catch(Exception e) {
-            Log.d("FCM-f", e.toString());
-        }
+//        try {
+//            Log.d("FCM-f", "Generate session key initiated");
+//            kdcs.generateSessionKey(user.name);
+//        } catch(Exception e) {
+//            Log.d("FCM-f", e.toString());
+//        }
         finish();
     }
 }
