@@ -124,6 +124,9 @@ public class ManageAccountController extends AppCompatActivity {
                     updateAccount();
                 }
         );
+        binding.backButton.setOnClickListener(t->{
+            startActivity(new Intent(getApplicationContext(), UserController.class));
+        });
 
     }
 }
