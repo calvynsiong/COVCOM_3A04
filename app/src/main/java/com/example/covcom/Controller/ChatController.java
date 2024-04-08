@@ -15,6 +15,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.covcom.Adapters.ChatAdapter;
 import com.example.covcom.Constants;
+import com.example.covcom.Controller.KDCSController;
 import com.example.covcom.Entity.Message;
 import com.example.covcom.Entity.User;
 import com.example.covcom.R;
@@ -27,6 +28,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -34,6 +36,7 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 
 public class ChatController extends AppCompatActivity {
 
@@ -43,9 +46,7 @@ public class ChatController extends AppCompatActivity {
     private ChatAdapter chatAdapter;
     private SharedPreferences preferences;
     private FirebaseFirestore database;
-    private KDCSController kdcs;
-    private SecretKey sessionKey;
-    private EncryptionController encryptContoller;
+    private EncryptionController encryptController;
 
     private void init(){
         preferences = getApplicationContext().getSharedPreferences(Constants.SHARED_PREFERENCE_KEY, Context.MODE_PRIVATE);
@@ -56,11 +57,11 @@ public class ChatController extends AppCompatActivity {
                 );
         binding.chatRecyclerView.setAdapter(chatAdapter);
         database = FirebaseFirestore.getInstance();
-        kdcs = new KDCSController(preferences.getString(Constants.DATABASE_USERNAME, ""));
         try {
-            sessionKey = this.getSessionKey();
-            Log.d("KDCS", "Session key:\t" + sessionKey);
-            encryptContoller = new EncryptionController(sessionKey);
+            String sessionKeyStr = preferences.getString(Constants.CHAT_SESSION_KEY, "default");
+            Log.d("KDCS", "Session key:\t" + sessionKeyStr);
+            SecretKey sessionKey = KDCSController.convertStringToKey(sessionKeyStr);
+            encryptController = new EncryptionController(sessionKey);
         } catch (Exception e) {
             Log.d("KDCS", "Error in creating encryption agent:\t" + e);
         }
@@ -91,16 +92,6 @@ public class ChatController extends AppCompatActivity {
         binding.receiverTextName.setText(receiverName);
     }
 
-    private SecretKey getSessionKey() throws Exception {
-        try {
-            Log.d("KDCS", "Generate session key initiated");
-            kdcs.generateSessionKey(receiver.name);
-            return kdcs.getSessionKey(receiver.name);
-        } catch(Exception e) {
-            throw new Exception("Error generating session key");
-        }
-    }
-
     private void listenMessages(){
         database.collection(Constants.KEY_CHAT)
                 .whereEqualTo(Constants.KEY_SENDER_ID,preferences.getString(Constants.KEY_USER_ID,""))
@@ -124,7 +115,7 @@ public class ChatController extends AppCompatActivity {
                     messageEntity.senderId = document.getString(Constants.KEY_SENDER_ID);
                     messageEntity.receiverId= document.getString(Constants.KEY_RECEIVER_ID);
                     try {
-                        messageText = encryptContoller.decrypt(document.getString(Constants.KEY_MESSAGE));
+                        messageText = encryptController.decrypt(document.getString(Constants.KEY_MESSAGE));
                     } catch (Exception e) {
                         Log.d("FCM-f", "Error eecrypting message" + e);
                         messageText = "Error decrypting";
@@ -161,7 +152,7 @@ public class ChatController extends AppCompatActivity {
         message.put(Constants.KEY_SENDER_ID,preferences.getString(Constants.KEY_USER_ID,""));
         message.put(Constants.KEY_RECEIVER_ID, receiver.id);
         try {
-            String encryptedText = encryptContoller.encrypt(binding.inputMessage.getText().toString());
+            String encryptedText = encryptController.encrypt(binding.inputMessage.getText().toString());
             message.put(Constants.KEY_MESSAGE,encryptedText);
         } catch (Exception e) {
             Log.d("FCM-f", "Error encrypting message" + e);
@@ -184,4 +175,5 @@ public class ChatController extends AppCompatActivity {
     private String getTimestamp(Date date){
         return new SimpleDateFormat("MMMM dd, yyyy - hh:mm", Locale.getDefault()).format(date);
     }
+
 }
