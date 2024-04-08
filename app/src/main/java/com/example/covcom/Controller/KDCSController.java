@@ -1,8 +1,11 @@
 package com.example.covcom.Controller;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -21,6 +24,7 @@ public class KDCSController {
     private String user;
     private FirebaseFirestore database;
     private HashMap<String, SecretKey> sessionKeyMap;
+    private SharedPreferences sharedPreferences;
     private static final String ALGO = "AES";
     private static final String TAG = "KDCS";
 
@@ -29,8 +33,9 @@ public class KDCSController {
     }
 
     // Initialize KDCS for currently authenticated user
-    public KDCSController(String user) {
-        this.user = user;
+    public KDCSController(SharedPreferences sharedPreferences) {
+        this.sharedPreferences = sharedPreferences;
+        this.user = sharedPreferences.getString(Constants.DATABASE_USERNAME, "");
         this.database = FirebaseFirestore.getInstance();
         this.sessionKeyMap = new HashMap<String, SecretKey>();
         // bonus: add a master key for encryption before storing on Firebase
@@ -40,10 +45,16 @@ public class KDCSController {
     // for specific chat session
     public void generateSessionKey(String recipient) throws Exception {
         // Create new session key if does not exist
-        // Stretch goal: update session key after set period of time
         this.updateSessionKeyMap(recipient, () -> {
             if (this.sessionKeyMap.containsKey(recipient)) {
-                Log.d(TAG, "Session key already exists:\t" + this.sessionKeyMap.get(recipient));
+                try {
+                    String keyStr = this.convertKeyToString(this.sessionKeyMap.get(recipient));
+                    Log.d(TAG, "Session key already exists:\t" + keyStr);
+                    this.sharedPreferences.edit().putString(Constants.CHAT_SESSION_KEY, keyStr).apply();
+                } catch (Exception e) {
+                    Log.d(TAG, "Error converting key to String" + e);
+                }
+
             }
             else {
                 try {
@@ -51,6 +62,7 @@ public class KDCSController {
                     String keyStr = Base64.getEncoder().encodeToString(k.getEncoded());;
                     addSessionKeyToDB(this.user, recipient, keyStr);
                     addSessionKeyToDB(recipient, this.user, keyStr);
+                    this.sharedPreferences.edit().putString(Constants.CHAT_SESSION_KEY, keyStr).apply();
                 } catch (Exception e) {
                     Log.d(TAG, "Error generating session key" + e);
                 }
@@ -59,7 +71,20 @@ public class KDCSController {
     }
 
     public SecretKey getSessionKey(String recipient) {
+        Log.d(TAG, "SessionKey Map:\t" + this.sessionKeyMap.toString() + "\trecipeint" + recipient);
         return this.sessionKeyMap.get(recipient);
+    }
+
+    public static String convertKeyToString(SecretKey key) throws Exception {
+        byte[] rawData = key.getEncoded();
+        String encodedKey = Base64.getEncoder().encodeToString(rawData);
+        return encodedKey;
+    }
+
+    public static SecretKey convertStringToKey(String keyStr) throws Exception {
+        byte[] decodedKey = Base64.getDecoder().decode(keyStr);
+        SecretKey key = new SecretKeySpec(decodedKey, 0, decodedKey.length, "AES");
+        return key;
     }
 
     private void updateSessionKeyMap(String recipient, OnSessionKeyUpdatedCallback listener) throws Exception {
@@ -69,6 +94,7 @@ public class KDCSController {
                         byte[] decodedKey = Base64.getDecoder().decode(keyStr);
                         SecretKey key = new SecretKeySpec(decodedKey, 0, decodedKey.length, ALGO);
                         this.sessionKeyMap.put(recipient, key);
+                        Log.d(TAG, "Session key map updated:\t" + this.sessionKeyMap.toString());
                     }
                     listener.onSessionKeyUpdated();
                 })
