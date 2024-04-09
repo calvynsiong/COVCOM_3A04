@@ -59,13 +59,11 @@ public class ChatController extends AppCompatActivity {
         database = FirebaseFirestore.getInstance();
         try {
             String sessionKeyStr = preferences.getString(Constants.CHAT_SESSION_KEY, "default");
-            Log.d("KDCS", "Session key:\t" + sessionKeyStr);
             SecretKey sessionKey = KDCSController.convertStringToKey(sessionKeyStr);
             encryptController = new EncryptionController(sessionKey);
         } catch (Exception e) {
             Log.d("KDCS", "Error in creating encryption agent:\t" + e);
         }
-
     }
 
         @Override
@@ -80,8 +78,8 @@ public class ChatController extends AppCompatActivity {
             return insets;
         });
         setListeners();
-        loadConversation();
         init();
+        loadConversation();
         listenMessages();
         }
 
@@ -117,8 +115,8 @@ public class ChatController extends AppCompatActivity {
                     try {
                         messageText = encryptController.decrypt(document.getString(Constants.KEY_MESSAGE));
                     } catch (Exception e) {
-                        Log.d("FCM-f", "Error eecrypting message" + e);
-                        messageText = "Error decrypting";
+                        Log.d("KDCS", "Error decrypting message" + e);
+                        messageText = document.getString(Constants.KEY_MESSAGE);
                     }
                     messageEntity.message = messageText;
                     messageEntity.dateTime = getTimestamp(document.getDate(Constants.KEY_TIMESTAMP));
@@ -155,8 +153,8 @@ public class ChatController extends AppCompatActivity {
             String encryptedText = encryptController.encrypt(binding.inputMessage.getText().toString());
             message.put(Constants.KEY_MESSAGE,encryptedText);
         } catch (Exception e) {
-            Log.d("FCM-f", "Error encrypting message" + e);
-            message.put(Constants.KEY_MESSAGE,"Error message");
+            Log.d("KDCS", "Error encrypting message" + e);
+            message.put(Constants.KEY_MESSAGE, "Error");
         }
         message.put(Constants.KEY_TIMESTAMP, new Date());
         database.collection(Constants.KEY_CHAT).add(message);

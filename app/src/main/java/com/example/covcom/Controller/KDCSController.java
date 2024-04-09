@@ -38,7 +38,6 @@ public class KDCSController {
         this.user = sharedPreferences.getString(Constants.DATABASE_USERNAME, "");
         this.database = FirebaseFirestore.getInstance();
         this.sessionKeyMap = new HashMap<String, SecretKey>();
-        // bonus: add a master key for encryption before storing on Firebase
     }
 
     // Create symmetric session keys for both chat users and store in Firestore
@@ -51,6 +50,7 @@ public class KDCSController {
                     String keyStr = this.convertKeyToString(this.sessionKeyMap.get(recipient));
                     Log.d(TAG, "Session key already exists:\t" + keyStr);
                     this.sharedPreferences.edit().putString(Constants.CHAT_SESSION_KEY, keyStr).apply();
+                    Log.d(TAG, "sharePreferences updated:\t" + this.sharedPreferences.getString(Constants.CHAT_SESSION_KEY, "Error"));
                 } catch (Exception e) {
                     Log.d(TAG, "Error converting key to String" + e);
                 }
