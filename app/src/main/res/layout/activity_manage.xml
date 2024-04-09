@@ -9,10 +9,11 @@
     android:background="@color/primary"
     tools:context=".Controller.ChatController">
 
-    <View
+    <ScrollView
         android:id="@+id/viewBackground"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:overScrollMode="always"
 
         android:layout_marginBottom="@dimen/_16sdp"
         android:background="@drawable/background_top"

@@ -17,6 +17,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.HashMap;
+import java.util.List;
 
 public class SignInController extends AppCompatActivity {
 
@@ -92,13 +93,14 @@ public class SignInController extends AppCompatActivity {
                 .whereEqualTo(Constants.DATABASE_PASSWORD, password)
                 .get()
                 .addOnCompleteListener(task -> {
-                    DocumentSnapshot documentResult  = task.getResult().getDocuments().get(0);
+                    List<DocumentSnapshot> documentResult  = task.getResult().getDocuments();
                     if (task.isSuccessful() && task.getResult() != null && documentResult!=null) {
                         Log.d("FCM", "Added user");
                         showToast("Logged in");
+
                         preferences.edit().putString(Constants.DATABASE_USERNAME, email).apply();
                         preferences.edit().putString(Constants.DATABASE_PASSWORD, password).apply();
-                        preferences.edit().putString(Constants.KEY_USER_ID, documentResult.getId()).apply();
+                        preferences.edit().putString(Constants.KEY_USER_ID, documentResult.get(0).getId()).apply();
 
                         startActivity(new Intent(getApplicationContext(), UserController.class));
                     } else {
