@@ -75,7 +75,6 @@ public class UserController extends AppCompatActivity implements UserListener {
                 .addOnCompleteListener(task -> {
                     loading(false);
                     String currentUserId = sharedPreferences.getString(Constants.KEY_USER_ID, "Default user");
-
                     if (!task.isSuccessful() || task.getResult() == null) {
                         showNoUsers();
                     }
@@ -84,11 +83,9 @@ public class UserController extends AppCompatActivity implements UserListener {
                         String username = entry.getString(Constants.DATABASE_USERNAME);
                         String userId = entry.getId();
                         if (currentUserId.equals(userId)) continue;
-
                         User user = new User();
                         user.name = username;
                         user.id = userId;
-
                         users.add(user);
                         Log.d("FCM-f",username);
 
