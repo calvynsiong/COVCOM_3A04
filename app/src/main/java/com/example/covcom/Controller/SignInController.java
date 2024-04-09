@@ -68,13 +68,13 @@ public class SignInController extends AppCompatActivity {
                 .whereEqualTo(Constants.DATABASE_FAKE, password)
                 .get()
                 .addOnCompleteListener(task2 -> {
-                    DocumentSnapshot documentResult  = task2.getResult().getDocuments().get(0);
-                    if (task2.isSuccessful() && task2.getResult() != null && documentResult!=null) {
+                    List<DocumentSnapshot> documentResult2  = task2.getResult().getDocuments();
+                    if (task2.isSuccessful() && task2.getResult() != null && documentResult2!=null) {
                         Log.d("FCM", "Added Fake user");
                         showToast("Logged in to Fake Account");
                         preferences.edit().putString(Constants.DATABASE_USERNAME, email).apply();
                         preferences.edit().putString(Constants.DATABASE_PASSWORD, password).apply();
-                        preferences.edit().putString(Constants.KEY_USER_ID, documentResult.getId()).apply();
+                        preferences.edit().putString(Constants.KEY_USER_ID, documentResult2.get(0).getId()).apply();
                         showToast("Location has been shared, HR has been notified");
                         startActivity(new Intent(getApplicationContext(), UserController.class));
                     }
