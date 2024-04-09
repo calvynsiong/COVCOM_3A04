@@ -28,11 +28,11 @@ public class ManageAccountController extends AppCompatActivity {
         preferences = getApplicationContext().getSharedPreferences(Constants.SHARED_PREFERENCE_KEY, Context.MODE_PRIVATE);
         String name = preferences.getString(Constants.DATABASE_USERNAME, "Default user");
         binding.textView8.setText(name);
-        String email = preferences.getString(Constants.DATABASE_EMAIL, "Default email");
+        String email = preferences.getString(Constants.DATABASE_EMAIL, "No email");
         binding.textView9.setText(email);
-        String phoneNum = preferences.getString(Constants.DATABASE_PHONENUM, "Default Phone Number");
+        String phoneNum = preferences.getString(Constants.DATABASE_PHONENUM, "No Phone Number");
         binding.textView10.setText(phoneNum);
-        String timezone = preferences.getString(Constants.DATABASE_TIMEZONE, "Default Timezone");
+        String timezone = preferences.getString(Constants.DATABASE_TIMEZONE, "EST");
         binding.textView11.setText(timezone);
     }
     @Override
