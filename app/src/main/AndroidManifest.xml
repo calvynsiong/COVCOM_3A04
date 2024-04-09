@@ -24,9 +24,6 @@
         android:theme="@style/Theme.COVCOM"
         tools:targetApi="31">
         <activity
-            android:name=".Controller.FakeActivity"
-            android:exported="false" />
-        <activity
             android:name=".Controller.UserController"
             android:exported="false" />
         <activity
