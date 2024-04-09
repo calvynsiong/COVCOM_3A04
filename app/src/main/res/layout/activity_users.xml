@@ -11,16 +11,6 @@
 
 
     <ImageView
-        android:id="@+id/addContactButton"
-        android:layout_width="79dp"
-        android:layout_height="63dp"
-        android:layout_marginTop="6dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/baseline_add"
-        app:tint="@color/white" />
-
-    <ImageView
         android:id="@+id/manageButton"
         android:layout_width="63dp"
         android:layout_height="53dp"

@@ -39,8 +39,6 @@ public class SignInController extends AppCompatActivity {
 
     }
 
-    ;
-
 
     private Boolean isValidLogin() {
         if (binding.inputEmail.getText().toString().trim().isEmpty() || binding.inputPassword.getText().toString().trim().isEmpty()) {
@@ -62,6 +60,33 @@ public class SignInController extends AppCompatActivity {
         String password = binding.inputPassword.getText().toString();
 
         if (!isValidLogin()) showToast("Enter proper username/email and password");
+
+        //Fake Password Authentication
+        /*
+        db.collection(Constants.DATABASE_USERS)
+                .whereEqualTo(Constants.DATABASE_USERNAME, email)
+                .whereEqualTo(Constants.DATABASE_FAKE, password)
+                .get()
+                .addOnCompleteListener(task2 -> {
+                    List<DocumentSnapshot> documentResult2  = task2.getResult().getDocuments();
+                    if (task2.isSuccessful() && task2.getResult() != null && documentResult2!=null) {
+                        Log.d("FCM", "Added Fake user");
+                        showToast("Logged in to Fake Account");
+                        preferences.edit().putString(Constants.DATABASE_USERNAME, email).apply();
+                        preferences.edit().putString(Constants.DATABASE_PASSWORD, password).apply();
+                        preferences.edit().putString(Constants.KEY_USER_ID, documentResult2.get(0).getId()).apply();
+                        showToast("Location has been shared, HR has been notified");
+                        startActivity(new Intent(getApplicationContext(), UserController.class));
+                    }
+
+
+                })
+                .addOnFailureListener(exception -> {
+                    Log.d("FCM-f", exception.toString());
+                    showToast("Failed to fetch data. Error 404");
+                });
+        */
+        //End of Fake Password
 
         db.collection(Constants.DATABASE_USERS)
                 .whereEqualTo(Constants.DATABASE_USERNAME, email)
